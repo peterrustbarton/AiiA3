@@ -1,0 +1,269 @@
+// AiiA 3.0 Trading Application Database Schema
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/aiia_3_0/app/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// Authentication Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  password         String?
+  role             String    @default("USER") // USER, ADMIN
+  isActive         Boolean   @default(true)
+  disclaimerAccepted Boolean @default(false)
+  preferences      Json?     // Theme, notifications, etc.
+  
+  // Trading Settings
+  tradingMode      String    @default("PAPER") // PAPER, LIVE
+  riskTolerance    String    @default("MEDIUM") // LOW, MEDIUM, HIGH
+  maxPositionSize  Float     @default(1000.0)
+  
+  // Automation Settings
+  buyConfidenceThreshold  Int       @default(75)  // 0-100
+  sellConfidenceThreshold Int       @default(80)  // 0-100
+  maxTradeAmountAuto     Float     @default(500.0)
+  maxTradesPerDay        Int       @default(5)
+  stopLossPercent        Float     @default(5.0)  // Percentage
+  takeProfitPercent      Float     @default(10.0) // Percentage
+  requireManualConfirm   Boolean   @default(true) // Manual confirmation toggle
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  watchlists  Watchlist[]
+  trades      Trade[]
+  alerts      Alert[]
+  portfolios  Portfolio[]
+  activities  Activity[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Market Data Models
+model Asset {
+  id          String   @id @default(cuid())
+  symbol      String   @unique
+  name        String
+  type        String   // STOCK, CRYPTO, ETF, etc.
+  exchange    String?
+  description String?
+  sector      String?
+  industry    String?
+  logoUrl     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  prices        AssetPrice[]
+  watchlistItems WatchlistItem[]
+  trades        Trade[]
+  alerts        Alert[]
+  portfolioItems PortfolioItem[]
+  analyses      Analysis[]
+}
+
+model AssetPrice {
+  id        String   @id @default(cuid())
+  assetId   String
+  price     Float
+  open      Float?
+  high      Float?
+  low       Float?
+  volume    BigInt?
+  marketCap Float?
+  change    Float?
+  changePercent Float?
+  timestamp DateTime @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@index([assetId, timestamp])
+}
+
+// Watchlist Models
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User            @relation(fields: [userId], references: [id])
+  items WatchlistItem[]
+
+  @@unique([userId, name])
+}
+
+model WatchlistItem {
+  id          String   @id @default(cuid())
+  watchlistId String
+  assetId     String
+  addedAt     DateTime @default(now())
+
+  watchlist Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  asset     Asset     @relation(fields: [assetId], references: [id])
+
+  @@unique([watchlistId, assetId])
+}
+
+// Trading Models
+model Portfolio {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  type         String   @default("SIMULATED") // SIMULATED, LIVE
+  balance      Float    @default(100000) // Starting balance
+  totalValue   Float?
+  totalReturn  Float?
+  totalReturnPercent Float?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user  User            @relation(fields: [userId], references: [id])
+  items PortfolioItem[]
+  trades Trade[]
+}
+
+model PortfolioItem {
+  id          String   @id @default(cuid())
+  portfolioId String
+  assetId     String
+  quantity    Float
+  avgPrice    Float
+  totalCost   Float
+  currentValue Float?
+  unrealizedPnL Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id])
+  asset     Asset     @relation(fields: [assetId], references: [id])
+
+  @@unique([portfolioId, assetId])
+}
+
+model Trade {
+  id          String   @id @default(cuid())
+  userId      String
+  portfolioId String?
+  assetId     String
+  type        String   // BUY, SELL
+  quantity    Float
+  price       Float
+  totalAmount Float
+  fees        Float    @default(0)
+  status      String   @default("COMPLETED") // PENDING, COMPLETED, CANCELLED
+  isSimulated Boolean  @default(true)
+  executedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  user      User       @relation(fields: [userId], references: [id])
+  portfolio Portfolio? @relation(fields: [portfolioId], references: [id])
+  asset     Asset      @relation(fields: [assetId], references: [id])
+
+  @@index([userId, executedAt])
+}
+
+// Alert Models
+model Alert {
+  id          String   @id @default(cuid())
+  userId      String
+  assetId     String
+  type        String   // PRICE_ABOVE, PRICE_BELOW, VOLUME_SPIKE, etc.
+  condition   Json     // Alert condition parameters
+  message     String?
+  isActive    Boolean  @default(true)
+  isTriggered Boolean  @default(false)
+  triggeredAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id])
+}
+
+// Analysis Models
+model Analysis {
+  id               String   @id @default(cuid())
+  assetId          String
+  type             String   @default("AI_ANALYSIS") // AI_ANALYSIS, TECHNICAL, FUNDAMENTAL
+  recommendation   String   // BUY, SELL, HOLD
+  confidence       Int      // 0-100
+  priceTarget      Float?
+  timeHorizon      String?  // SHORT, MEDIUM, LONG
+  analysis         String   @db.Text
+  keyPoints        Json?    // Array of key insights
+  risks            Json?    // Array of risks
+  opportunities    Json?    // Array of opportunities
+  technicalData    Json?    // Technical indicators
+  fundamentalData  Json?    // Fundamental metrics
+  marketSentiment  String?  // BULLISH, BEARISH, NEUTRAL
+  generatedAt      DateTime @default(now())
+  expiresAt        DateTime?
+
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@index([assetId, generatedAt])
+}
+
+// Activity Log
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // LOGIN, TRADE, ALERT, ANALYSIS, etc.
+  description String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+}

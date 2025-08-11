@@ -1,0 +1,38 @@
+{
+  "taskId": "E-030",
+  "taskName": "Refresh Button",
+  "category": "Enhancement",
+  "scope": "Everywhere",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/ui/refresh-button.tsx",
+    "/components/dashboard/enhanced-market-movers-card.tsx",
+    "/components/analyze/enhanced-analyze-page.tsx"
+  ],
+  "changes": [
+    {
+      "file": "/components/ui/refresh-button.tsx",
+      "type": "created",
+      "linesChanged": 100,
+      "description": "Refresh button component with loading animation and timestamps"
+    },
+    {
+      "file": "/components/dashboard/enhanced-market-movers-card.tsx",
+      "type": "modified",
+      "linesChanged": 15,
+      "description": "Integrated refresh functionality"
+    },
+    {
+      "file": "/components/analyze/enhanced-analyze-page.tsx",
+      "type": "modified",
+      "linesChanged": 10,
+      "description": "Integrated refresh functionality"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove RefreshButton components from all views",
+    "Delete /components/ui/refresh-button.tsx"
+  ],
+  "testStatus": "pending"
+}

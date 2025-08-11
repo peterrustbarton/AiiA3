@@ -1,0 +1,46 @@
+{
+  "taskId": "E-019",
+  "taskName": "Chart Interval Selector",
+  "category": "Enhancement",
+  "scope": "Home dashboard chart & asset analysis views",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/ui/chart-interval-selector.tsx",
+    "/components/analyze/enhanced-analyze-page.tsx",
+    "/app/api/assets/[symbol]/history/route.ts",
+    "/lib/enhanced-market-data.ts"
+  ],
+  "changes": [
+    {
+      "file": "/components/ui/chart-interval-selector.tsx",
+      "type": "created",
+      "linesChanged": 120,
+      "description": "Chart interval selector with 1D, 1W, 1M, 3M, YTD, 1Y, Max options"
+    },
+    {
+      "file": "/components/analyze/enhanced-analyze-page.tsx",
+      "type": "modified",
+      "linesChanged": 25,
+      "description": "Integrated chart interval functionality"
+    },
+    {
+      "file": "/app/api/assets/[symbol]/history/route.ts",
+      "type": "created",
+      "linesChanged": 30,
+      "description": "API endpoint for price history with intervals"
+    },
+    {
+      "file": "/lib/enhanced-market-data.ts",
+      "type": "modified",
+      "linesChanged": 25,
+      "description": "Added getPriceHistory method"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove ChartIntervalSelector components",
+    "Delete /components/ui/chart-interval-selector.tsx",
+    "Delete /app/api/assets/[symbol]/history/route.ts"
+  ],
+  "testStatus": "pending"
+}

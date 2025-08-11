@@ -1,0 +1,38 @@
+{
+  "taskId": "E-031",
+  "taskName": "Last Updated Timestamp",
+  "category": "Enhancement",
+  "scope": "Everywhere",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/ui/last-updated.tsx",
+    "/components/dashboard/enhanced-market-movers-card.tsx",
+    "/components/analyze/enhanced-analyze-page.tsx"
+  ],
+  "changes": [
+    {
+      "file": "/components/ui/last-updated.tsx",
+      "type": "created",
+      "linesChanged": 80,
+      "description": "Last updated timestamp component with market status"
+    },
+    {
+      "file": "/components/dashboard/enhanced-market-movers-card.tsx",
+      "type": "modified",
+      "linesChanged": 8,
+      "description": "Integrated last updated timestamps"
+    },
+    {
+      "file": "/components/analyze/enhanced-analyze-page.tsx",
+      "type": "modified",
+      "linesChanged": 6,
+      "description": "Integrated last updated timestamps"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove LastUpdated components from all views",
+    "Delete /components/ui/last-updated.tsx"
+  ],
+  "testStatus": "pending"
+}

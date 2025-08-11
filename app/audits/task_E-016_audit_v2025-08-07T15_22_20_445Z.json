@@ -1,0 +1,38 @@
+{
+  "taskId": "E-016",
+  "taskName": "Loading Animation & Progress Estimate",
+  "category": "Enhancement",
+  "scope": "All pages, modals, panels",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/ui/loading-spinner.tsx",
+    "/components/dashboard/enhanced-market-movers-card.tsx",
+    "/components/analyze/enhanced-analyze-page.tsx"
+  ],
+  "changes": [
+    {
+      "file": "/components/ui/loading-spinner.tsx",
+      "type": "created",
+      "linesChanged": 180,
+      "description": "Loading spinner component with multiple variants and progress estimation"
+    },
+    {
+      "file": "/components/dashboard/enhanced-market-movers-card.tsx",
+      "type": "modified",
+      "linesChanged": 20,
+      "description": "Integrated loading animations"
+    },
+    {
+      "file": "/components/analyze/enhanced-analyze-page.tsx",
+      "type": "modified",
+      "linesChanged": 35,
+      "description": "Integrated loading animations with progress tracking"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove LoadingSpinner components from all views",
+    "Delete /components/ui/loading-spinner.tsx"
+  ],
+  "testStatus": "pending"
+}

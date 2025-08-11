@@ -1,0 +1,38 @@
+{
+  "taskId": "E-029",
+  "taskName": "Watchlist Toggle",
+  "category": "Enhancement",
+  "scope": "Everywhere",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/ui/watchlist-toggle.tsx",
+    "/components/dashboard/enhanced-market-movers-card.tsx",
+    "/components/analyze/enhanced-analyze-page.tsx"
+  ],
+  "changes": [
+    {
+      "file": "/components/ui/watchlist-toggle.tsx",
+      "type": "created",
+      "linesChanged": 120,
+      "description": "Star icon component for watchlist management with persistence"
+    },
+    {
+      "file": "/components/dashboard/enhanced-market-movers-card.tsx",
+      "type": "created",
+      "linesChanged": 280,
+      "description": "Enhanced market movers with watchlist toggles"
+    },
+    {
+      "file": "/components/analyze/enhanced-analyze-page.tsx",
+      "type": "created",
+      "linesChanged": 450,
+      "description": "Enhanced analyze page with watchlist toggles"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove WatchlistToggle components from all views",
+    "Delete /components/ui/watchlist-toggle.tsx"
+  ],
+  "testStatus": "pending"
+}

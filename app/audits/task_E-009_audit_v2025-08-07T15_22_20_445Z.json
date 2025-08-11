@@ -1,0 +1,23 @@
+{
+  "taskId": "E-009",
+  "taskName": "Symbol Link to Full Analysis",
+  "category": "Enhancement",
+  "scope": "Portfolio/Trade History, Home/Market Movers",
+  "version": "2025-08-07T15_22_20_445Z",
+  "timestamp": "2025-08-07T15:22:20.445Z",
+  "affectedFiles": [
+    "/components/dashboard/enhanced-market-movers-card.tsx"
+  ],
+  "changes": [
+    {
+      "file": "/components/dashboard/enhanced-market-movers-card.tsx",
+      "type": "modified",
+      "linesChanged": 12,
+      "description": "Made symbols clickable with navigation to analysis page"
+    }
+  ],
+  "rollbackInstructions": [
+    "Remove Link components and revert to plain text symbols"
+  ],
+  "testStatus": "pending"
+}
